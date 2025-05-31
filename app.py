@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.title("📱 Controle de Ganhos - Motorista de App")
+st.title(" Controle de Ganhos - Motorista de App")
 
 st.markdown("Preencha seus ganhos mensais para ver o quanto declarar no Carnê-Leão.")
 
@@ -30,6 +30,6 @@ st.dataframe(df.style.format({"Uber (R$)": "R$ {:.2f}", "99 (R$)": "R$ {:.2f}",
                               "Total (R$)": "R$ {:.2f}", "Dedução 40% (R$)": "R$ {:.2f}",
                               "Declarar 60% (R$)": "R$ {:.2f}"}))
 
-st.markdown("## 📊 Total no Ano")
+st.markdown("##  Total no Ano")
 st.write(f"**Ganhos Totais:** R$ {df['Total (R$)'].sum():,.2f}")
 st.write(f"**Receita a Declarar:** R$ {df['Declarar 60% (R$)'].sum():,.2f}")
