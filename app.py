@@ -1,36 +1,35 @@
 import streamlit as st
+import pandas as pd
 
-st.set_page_config(page_title="Ganhos de Motorista de App", layout="centered")
+st.title("📱 Controle de Ganhos - Motorista de App")
 
-st.title(" Ganhos como Motorista de App")
+st.markdown("Preencha seus ganhos mensais para ver o quanto declarar no Carnê-Leão.")
 
-# Entradas de texto (evita bug do number_input)
-uber_str = st.text_input("Ganhos na Uber (R$)", "0")
-g99_str = st.text_input("Ganhos na 99 (R$)", "0")
+meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 
-# Converte string para float, trocando vírgula por ponto
-try:
-    uber = float(uber_str.replace(",", "."))
-except:
-    uber = 0.0
+dados = []
 
-try:
-    g99 = float(g99_str.replace(",", "."))
-except:
-    g99 = 0.0
+for mes in meses:
+    uber = st.number_input(f"{mes} - Ganhos Uber (R$)", min_value=0.0, step=10.0, key=f"uber_{mes}")
+    noventa_nove = st.number_input(f"{mes} - Ganhos 99 (R$)", min_value=0.0, step=10.0, key=f"n99_{mes}")
+    total = uber + noventa_nove
+    deducao = total * 0.4
+    declarar = total * 0.6
+    dados.append({
+        "Mês": mes,
+        "Uber (R$)": uber,
+        "99 (R$)": noventa_nove,
+        "Total (R$)": total,
+        "Dedução 40% (R$)": deducao,
+        "Declarar 60% (R$)": declarar
+    })
 
-# Cálculos
-total = uber + g99
-deducao = total * 0.40
-declarar = total * 0.60
+df = pd.DataFrame(dados)
+st.dataframe(df.style.format({"Uber (R$)": "R$ {:.2f}", "99 (R$)": "R$ {:.2f}",
+                              "Total (R$)": "R$ {:.2f}", "Dedução 40% (R$)": "R$ {:.2f}",
+                              "Declarar 60% (R$)": "R$ {:.2f}"}))
 
-# Função para formatar no estilo brasileiro: 1.234,56
-def format_brl(valor):
-    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-# Exibição dos resultados
-st.markdown("---")
-st.subheader(" Resultado")
-st.write(f"**Ganhos Totais:** {format_brl(total)}")
-st.write(f"**Dedução (40%):** {format_brl(deducao)}")
-st.write(f"**Receita a Declarar (60%):** {format_brl(declarar)}")
+st.markdown("## 📊 Total no Ano")
+st.write(f"**Ganhos Totais:** R$ {df['Total (R$)'].sum():,.2f}")
+st.write(f"**Receita a Declarar:** R$ {df['Declarar 60% (R$)'].sum():,.2f}")
